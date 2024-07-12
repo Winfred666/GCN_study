@@ -15,9 +15,7 @@ def train_base(layer_dims, data,
             device = torch.device('cuda') if torch.cuda.is_available() else 'cpu'):
 
     
-    print(f'Using device: {device} args: layer_dims: {layer_dims}, dropout_rate: {dropout_rate}, \n\
-        learning_rate: {learning_rate}, weight_decay: {weight_decay}, epoch_num: {epoch_num}, \n\
-        self_importance: {self_importance}, laplace_norm: {laplace_norm}')
+    print(f'Using device: {device} \nlayer_dims: {layer_dims}, \ndropout_rate: {dropout_rate}, \nlearning_rate: {learning_rate}, \nweight_decay: {weight_decay}, \nepoch_num: {epoch_num}, \nself_importance: {self_importance}, \nlaplace_norm: {laplace_norm}')
     
     data = data_to_tensor(data, device)
     
