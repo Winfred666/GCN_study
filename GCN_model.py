@@ -27,7 +27,7 @@ class GCN_Base(nn.Module):
         
         # the last layer will use softmax as activation function, suitable for classification
         self.layers.add_module(f'layer{last_i}',
-            GraphConvolution_Base(layer_dims[last_i], layer_dims[last_i+1], activation=F.relu, dropout_rate=dropout_rate))
+            GraphConvolution_Base(layer_dims[last_i], layer_dims[last_i+1], activation=F.softmax, dropout_rate=dropout_rate))
         
     def forward(self, inputs):
         x,hat_A = inputs
