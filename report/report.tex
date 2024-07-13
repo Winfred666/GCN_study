@@ -1,0 +1,102 @@
+\documentclass[12pt]{ctexart} % Use 10pt or 9pt as the base size
+
+\usepackage{xeCJK} % For CJK support
+\usepackage{fontspec} % For font settings
+
+\usepackage{amsmath}
+\usepackage{cases}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{hyperref} % For clickable links in the table of contents
+\usepackage{tocloft} % For customizing the table of contents
+
+\geometry{a4paper}
+
+\setstretch{1.25} % Set line spacing to 1.25
+
+\pagestyle{fancy}
+\fancyhf{}
+% \fancyhead[L]{驰雨Chiyuru}
+% \fancyhead[C]{The name of the experiment}
+\pagenumbering{arabic}
+% Set main font for Latin text
+
+
+
+\setCJKfamilyfont{SimHei}[BoldFont={SimHei-Bold}]{SimHei}
+\setmainfont{Times New Roman}
+% Set font for CJK text
+\setCJKmainfont{SimSun} % For body text
+\setCJKsansfont{SimHei} % For sans-serif text, often used for titles
+
+% Redefine section, subsection, etc. fonts
+\titleformat{\section}{\normalfont\Large\bfseries\CJKfontspec{SimHei}}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries\CJKfontspec{SimHei}}{\thesubsection}{1em}{}
+
+
+\title{\CJKfontspec{SimHei}\Huge\bfseries 论文标题}
+\author{作者姓名}
+
+\date{\today}
+
+
+\begin{document}
+
+
+\fancyfoot[C]{\thepage}
+
+\maketitle
+
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\tableofcontents
+\newpage
+
+
+\section{摘要}
+
+
+\section{实验原理}
+
+\section{实验过程与数据分析}
+
+实验得到的数据如下：
+
+\begin{center}
+
+\end{center}
+
+% 行间公式用 $$ $$ 或者 \[ \] 来框住都可以，但在 LaTeX 中前者会改变行文的默认行间距，因此不推荐采用。
+\paragraph{}这是一个不确定度计算。
+
+\[
+U_k=tinv(x,y)×s_k=xxx
+\]
+
+\section{分析与讨论}
+
+\newpage
+%图一般很大，建议换页。
+\section{原始数据}
+
+\begin{figure}[h]
+    \centering
+    % \includegraphics{img/example.png}
+    \caption{Your caption text goes here}
+    \label{fig:example}
+\end{figure}
+
+
+\cite{velickovic_graph_2018}
+\cite{hamilton_inductive_2018}
+\cite{kipf_cgnsemi-supervised_2017}
+\cite{yang_revisiting_2016}
+\cite{hammond_wavelets_2009}
+\cite{zeiler_visualizing_2013}
+
+\bibliographystyle{plain}
+\bibliography{./report}  %bib文件名
+
+\end{document}

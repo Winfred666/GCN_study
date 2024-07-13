@@ -1,0 +1,32 @@
+\begin{thebibliography}{1}
+
+\bibitem{hamilton_inductive_2018}
+William~L. Hamilton, Rex Ying, and Jure Leskovec.
+\newblock Inductive {Representation} {Learning} on {Large} {Graphs}, September 2018.
+\newblock arXiv:1706.02216 [cs, stat].
+
+\bibitem{hammond_wavelets_2009}
+David~K. Hammond, Pierre Vandergheynst, and Rémi Gribonval.
+\newblock Wavelets on {Graphs} via {Spectral} {Graph} {Theory}, December 2009.
+
+\bibitem{kipf_cgnsemi-supervised_2017}
+Thomas~N. Kipf and Max Welling.
+\newblock {Semi}-{Supervised} {Classification} with {Graph} {Convolutional} {Networks}, February 2017.
+\newblock arXiv:1609.02907 [cs, stat].
+
+\bibitem{velickovic_graph_2018}
+Petar Veličković, Guillem Cucurull, Arantxa Casanova, Adriana Romero, Pietro Liò, and {Yoshua Bengio}.
+\newblock Graph {Attention} {Networks}, February 2018.
+\newblock arXiv:1710.10903 [cs, stat].
+
+\bibitem{yang_revisiting_2016}
+Zhilin Yang, William~W. Cohen, and Ruslan Salakhutdinov.
+\newblock Revisiting {Semi}-{Supervised} {Learning} with {Graph} {Embeddings}, May 2016.
+\newblock arXiv:1603.08861 [cs] rate: 1.
+
+\bibitem{zeiler_visualizing_2013}
+Matthew~D. Zeiler and Rob Fergus.
+\newblock Visualizing and {Understanding} {Convolutional} {Networks}, November 2013.
+\newblock arXiv:1311.2901 [cs] rate: 1.
+
+\end{thebibliography}
