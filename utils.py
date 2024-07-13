@@ -64,9 +64,9 @@ def calculate_hat_A(adj,self_importance=1.0,laplace_norm=True):
         # get normalized laplace matrix
         hat_A = D_m2.T @ tilde_A @ D_m2 # D^-0.5AD^0.5
     else:
-        D_inv = torch.power(tilde_D, -1)
+        D_inv = np.power(tilde_D, -1.0).flatten()
         D_inv[np.isinf(D_inv)] = 0.0
-        D_inv = torch.diag(D_inv)
+        D_inv = np.diag(D_inv)
         hat_A = D_inv.T @ tilde_A
     
     return sparse_to_tuple(sp.coo_matrix(hat_A)) # first transform back to sparse matrix
