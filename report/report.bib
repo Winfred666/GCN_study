@@ -1,44 +1,24 @@
-
-@misc{velickovic_graph_2018,
-	title = {Graph {Attention} {Networks}},
-	url = {http://arxiv.org/abs/1710.10903},
-	doi = {10.48550/arXiv.1710.10903},
-	abstract = {We present graph attention networks (GATs), novel neural network architectures that operate on graph-structured data, leveraging masked self-attentional layers to address the shortcomings of prior methods based on graph convolutions or their approximations. By stacking layers in which nodes are able to attend over their neighborhoods' features, we enable (implicitly) specifying different weights to different nodes in a neighborhood, without requiring any kind of costly matrix operation (such as inversion) or depending on knowing the graph structure upfront. In this way, we address several key challenges of spectral-based graph neural networks simultaneously, and make our model readily applicable to inductive as well as transductive problems. Our GAT models have achieved or matched state-of-the-art results across four established transductive and inductive graph benchmarks: the Cora, Citeseer and Pubmed citation network datasets, as well as a protein-protein interaction dataset (wherein test graphs remain unseen during training).},
-	urldate = {2024-07-07},
-	publisher = {arXiv},
-	author = {Veličković, Petar and Cucurull, Guillem and Casanova, Arantxa and Romero, Adriana and Liò, Pietro and {Yoshua Bengio}},
-	month = feb,
-	year = {2018},
-	note = {arXiv:1710.10903 [cs, stat]},
-	keywords = {\#代码, Computer Science - Artificial Intelligence, Computer Science - Machine Learning, Computer Science - Social and Information Networks, Statistics - Machine Learning},
+@article{kipf2017semi,
+  title={Semi-Supervised Classification with Graph Convolutional Networks},
+  author={Kipf, Thomas N and Welling, Max},
+  journal={arXiv preprint arXiv:1609.02907},
+  year={2017}
 }
 
-@misc{hamilton_inductive_2018,
-	title = {Inductive {Representation} {Learning} on {Large} {Graphs}},
-	url = {http://arxiv.org/abs/1706.02216},
-	doi = {10.48550/arXiv.1706.02216},
-	abstract = {Low-dimensional embeddings of nodes in large graphs have proved extremely useful in a variety of prediction tasks, from content recommendation to identifying protein functions. However, most existing approaches require that all nodes in the graph are present during training of the embeddings; these previous approaches are inherently transductive and do not naturally generalize to unseen nodes. Here we present GraphSAGE, a general, inductive framework that leverages node feature information (e.g., text attributes) to efficiently generate node embeddings for previously unseen data. Instead of training individual embeddings for each node, we learn a function that generates embeddings by sampling and aggregating features from a node's local neighborhood. Our algorithm outperforms strong baselines on three inductive node-classification benchmarks: we classify the category of unseen nodes in evolving information graphs based on citation and Reddit post data, and we show that our algorithm generalizes to completely unseen graphs using a multi-graph dataset of protein-protein interactions.},
-	urldate = {2024-07-07},
-	publisher = {arXiv},
-	author = {Hamilton, William L. and Ying, Rex and Leskovec, Jure},
-	month = sep,
-	year = {2018},
-	note = {arXiv:1706.02216 [cs, stat]},
-	keywords = {Computer Science - Machine Learning, Computer Science - Social and Information Networks, Statistics - Machine Learning},
-}
 
-@misc{kipf_cgnsemi-supervised_2017,
-	title = {{Semi}-{Supervised} {Classification} with {Graph} {Convolutional} {Networks}},
-	url = {http://arxiv.org/abs/1609.02907},
-	doi = {10.48550/arXiv.1609.02907},
-	abstract = {We present a scalable approach for semi-supervised learning on graph-structured data that is based on an efficient variant of convolutional neural networks which operate directly on graphs. We motivate the choice of our convolutional architecture via a localized first-order approximation of spectral graph convolutions. Our model scales linearly in the number of graph edges and learns hidden layer representations that encode both local graph structure and features of nodes. In a number of experiments on citation networks and on a knowledge graph dataset we demonstrate that our approach outperforms related methods by a significant margin.},
-	urldate = {2024-07-07},
+@misc{defferrard_convolutional_2017,
+	title = {Convolutional {Neural} {Networks} on {Graphs} with {Fast} {Localized} {Spectral} {Filtering}},
+	url = {http://arxiv.org/abs/1606.09375},
+	doi = {10.48550/arXiv.1606.09375},
+	abstract = {In this work, we are interested in generalizing convolutional neural networks (CNNs) from low-dimensional regular grids, where image, video and speech are represented, to high-dimensional irregular domains, such as social networks, brain connectomes or words' embedding, represented by graphs. We present a formulation of CNNs in the context of spectral graph theory, which provides the necessary mathematical background and efficient numerical schemes to design fast localized convolutional filters on graphs. Importantly, the proposed technique offers the same linear computational complexity and constant learning complexity as classical CNNs, while being universal to any graph structure. Experiments on MNIST and 20NEWS demonstrate the ability of this novel deep learning system to learn local, stationary, and compositional features on graphs.},
+	urldate = {2024-07-14},
 	publisher = {arXiv},
-	author = {Kipf, Thomas N. and Welling, Max},
+	author = {Defferrard, Michaël and Bresson, Xavier and Vandergheynst, Pierre},
 	month = feb,
 	year = {2017},
-	note = {arXiv:1609.02907 [cs, stat]},
-	keywords = {\#代码, Computer Science - Machine Learning, Statistics - Machine Learning},
+	note = {arXiv:1606.09375 [cs, stat]},
+	keywords = {Computer Science - Machine Learning, Statistics - Machine Learning},
+	file = {arXiv.org Snapshot:C\:\\My_CS\\学习资料\\Zotero\\storage\\4FV44E26\\1606.html:text/html;Convolutional Neural Networks on Graphs with Fast Localized Spectral Filtering_2017_Defferrard et al.pdf:C\:\\Users\\Winfred X\\OneDrive\\zoteroPDF\\Convolutional Neural Networks on Graphs with Fast Localized Spectral Filtering_2017_Defferrard et al.pdf:application/pdf},
 }
 
 @misc{yang_revisiting_2016,
@@ -55,6 +35,37 @@
 rate: 1},
 	keywords = {Computer Science - Machine Learning},
 }
+
+
+@misc{hamilton_inductive_2018,
+	title = {Inductive {Representation} {Learning} on {Large} {Graphs}},
+	url = {http://arxiv.org/abs/1706.02216},
+	doi = {10.48550/arXiv.1706.02216},
+	abstract = {Low-dimensional embeddings of nodes in large graphs have proved extremely useful in a variety of prediction tasks, from content recommendation to identifying protein functions. However, most existing approaches require that all nodes in the graph are present during training of the embeddings; these previous approaches are inherently transductive and do not naturally generalize to unseen nodes. Here we present GraphSAGE, a general, inductive framework that leverages node feature information (e.g., text attributes) to efficiently generate node embeddings for previously unseen data. Instead of training individual embeddings for each node, we learn a function that generates embeddings by sampling and aggregating features from a node's local neighborhood. Our algorithm outperforms strong baselines on three inductive node-classification benchmarks: we classify the category of unseen nodes in evolving information graphs based on citation and Reddit post data, and we show that our algorithm generalizes to completely unseen graphs using a multi-graph dataset of protein-protein interactions.},
+	urldate = {2024-07-07},
+	publisher = {arXiv},
+	author = {Hamilton, William L. and Ying, Rex and Leskovec, Jure},
+	month = sep,
+	year = {2018},
+	note = {arXiv:1706.02216 [cs, stat]},
+	keywords = {Computer Science - Machine Learning, Computer Science - Social and Information Networks, Statistics - Machine Learning},
+}
+
+@misc{yang_defining_2012,
+	title = {Defining and {Evaluating} {Network} {Communities} based on {Ground}-truth},
+	url = {https://arxiv.org/abs/1205.6233v3},
+	abstract = {Nodes in real-world networks organize into densely linked communities where edges appear with high concentration among the members of the community. Identifying such communities of nodes has proven to be a challenging task mainly due to a plethora of definitions of a community, intractability of algorithms, issues with evaluation and the lack of a reliable gold-standard ground-truth. In this paper we study a set of 230 large real-world social, collaboration and information networks where nodes explicitly state their group memberships. For example, in social networks nodes explicitly join various interest based social groups. We use such groups to define a reliable and robust notion of ground-truth communities. We then propose a methodology which allows us to compare and quantitatively evaluate how different structural definitions of network communities correspond to ground-truth communities. We choose 13 commonly used structural definitions of network communities and examine their sensitivity, robustness and performance in identifying the ground-truth. We show that the 13 structural definitions are heavily correlated and naturally group into four classes. We find that two of these definitions, Conductance and Triad-participation-ratio, consistently give the best performance in identifying ground-truth communities. We also investigate a task of detecting communities given a single seed node. We extend the local spectral clustering algorithm into a heuristic parameter-free community detection method that easily scales to networks with more than hundred million nodes. The proposed method achieves 30\% relative improvement over current local clustering methods.},
+	language = {en},
+	urldate = {2024-07-14},
+	journal = {arXiv.org},
+	author = {Yang, Jaewon and Leskovec, Jure},
+	month = may,
+	year = {2012},
+	keywords = {\#数据集},
+	file = {Defining and Evaluating Network Communities based on Ground-truth_2012_Yang_Leskovec.pdf:C\:\\Users\\Winfred X\\OneDrive\\zoteroPDF\\Defining and Evaluating Network Communities based on Ground-truth_2012_Yang_Leskovec.pdf:application/pdf},
+}
+
+
 
 @misc{hammond_wavelets_2009,
 	title = {Wavelets on {Graphs} via {Spectral} {Graph} {Theory}},

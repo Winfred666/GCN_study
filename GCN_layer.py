@@ -2,6 +2,7 @@
 # define the convolutional layer of GCN
 import  torch
 from    torch import nn
+from    torch.nn import functional as F
 from utils import sparse_dropout
 
 # 1.use classical conv layer deduced by normalize laplace matrix
@@ -66,4 +67,8 @@ class GraphConvolution_Base(nn.Module):
             output = output + self.bias
 
         # finally apply activation function
-        return self.activation(output)
+        if(self.activation == F.softmax):
+            output = self.activation(output, dim=1)
+        else:
+            output = self.activation(output)
+        return output

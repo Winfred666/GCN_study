@@ -31,10 +31,12 @@ def sparse_dropout(x, rate, noise_shape):
 def sparse_to_tuple(sparse_mx):
     """
     Convert sparse matrix to tuple representation.
+    Because there is no ready-made method, this is do it by brute-force
     """
     def to_tuple(mx):
         if not sp.isspmatrix_coo(mx):
             mx = mx.tocoo()
+        # Extract the row and column coordinates of non-zero elements
         coords = np.vstack((mx.row, mx.col)).transpose()
         values = mx.data
         shape = mx.shape
@@ -90,13 +92,13 @@ def preprocess_features(features):
     rowsum = np.array(features.sum(1)) # get sum of each row, [2708, 1]
 
     r_inv = np.divide(1, rowsum, out=np.zeros_like(rowsum), 
-    where=rowsum!=0).flatten()
+        where=rowsum!=0).flatten()
     # r_inv = np.power(rowsum, -1).flatten() # 1/rowsum, [2708]
     # r_inv[np.isinf(r_inv)] = 0. # zero inf data
 
-    r_mat_inv = sp.diags(r_inv) # sparse diagonal matrix, [2708, 2708]
-    features = r_mat_inv.dot(features) # D^-1:[2708, 2708]@X:[2708, 2708]
-    return sparse_to_tuple(features) # [coordinates, data, shape], []
+    r_mat_inv = sp.diags(r_inv) # turn the normalized factor into sparse diagonal matrix
+    features = r_mat_inv.dot(features) # D^-1:
+    return sparse_to_tuple(features) # return [coordinates, data, shape], suitable to load into GPU
 
 
 

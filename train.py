@@ -12,10 +12,11 @@ def train_base(layer_dims, data,
             dropout_rate = 0.2,learning_rate = 0.01, weight_decay = 0.0001, # some hyperparameters
             epoch_num = 200,
             self_importance = 1.0, laplace_norm = True,
-            device = torch.device('cuda') if torch.cuda.is_available() else 'cpu'):
+            device = torch.device('cuda') if torch.cuda.is_available() else 'cpu',
+            verbose = True):
 
-    
-    print(f'Using device: {device} \nlayer_dims: {layer_dims}, \ndropout_rate: {dropout_rate}, \nlearning_rate: {learning_rate}, \nweight_decay: {weight_decay}, \nepoch_num: {epoch_num}, \nself_importance: {self_importance}, \nlaplace_norm: {laplace_norm}')
+    if verbose:
+        print(f'Using device: {device} \nlayer_dims: {layer_dims}, \ndropout_rate: {dropout_rate}, \nlearning_rate: {learning_rate}, \nweight_decay: {weight_decay}, \nepoch_num: {epoch_num}, \nself_importance: {self_importance}, \nlaplace_norm: {laplace_norm}')
     
     data = data_to_tensor(data, device)
     
@@ -41,6 +42,8 @@ def train_base(layer_dims, data,
     
     lost_list = []
     val_acc_list = []
+    train_acc_list = []
+    out = None
 
     for epoch in range(epoch_num):
         # every time, input feature of all node in graph, no minibatch
@@ -61,12 +64,14 @@ def train_base(layer_dims, data,
         out = net((x, hat_A))[0]
         acc = masked_acc(out, y, train_mask) # get accuracy on train set
         acc_val = masked_acc(out, y, validate_mask) # get accuracy on validate set
-        val_acc_list.append(acc_val)
+        val_acc_list.append(acc_val.item())
+        train_acc_list.append(acc.item())
         lost_list.append(loss.item())
-        if epoch % 10 == 0:
+
+        if verbose and epoch % 10 == 0:
             print(f'Epoch: {epoch}, Loss: {loss.item():.4f}, Train Set Acc: {acc.item():.4f}, Validate Set Acc: {acc_val.item():.4f}')
         
-    return net, val_acc_list, lost_list
+    return net, train_acc_list, val_acc_list, lost_list, out.argmax(dim=1).cpu().detach().numpy()
 
 
 

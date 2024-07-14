@@ -9,15 +9,14 @@ William~L. Hamilton, Rex Ying, and Jure Leskovec.
 David~K. Hammond, Pierre Vandergheynst, and Rémi Gribonval.
 \newblock Wavelets on {Graphs} via {Spectral} {Graph} {Theory}, December 2009.
 
-\bibitem{kipf_cgnsemi-supervised_2017}
-Thomas~N. Kipf and Max Welling.
-\newblock {Semi}-{Supervised} {Classification} with {Graph} {Convolutional} {Networks}, February 2017.
-\newblock arXiv:1609.02907 [cs, stat].
+\bibitem{kipf2017semi}
+Thomas~N Kipf and Max Welling.
+\newblock Semi-supervised classification with graph convolutional networks.
+\newblock {\em arXiv preprint arXiv:1609.02907}, 2017.
 
-\bibitem{velickovic_graph_2018}
-Petar Veličković, Guillem Cucurull, Arantxa Casanova, Adriana Romero, Pietro Liò, and {Yoshua Bengio}.
-\newblock Graph {Attention} {Networks}, February 2018.
-\newblock arXiv:1710.10903 [cs, stat].
+\bibitem{yang_defining_2012}
+Jaewon Yang and Jure Leskovec.
+\newblock Defining and {Evaluating} {Network} {Communities} based on {Ground}-truth, May 2012.
 
 \bibitem{yang_revisiting_2016}
 Zhilin Yang, William~W. Cohen, and Ruslan Salakhutdinov.

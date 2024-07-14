@@ -1,6 +1,8 @@
-\contentsline {section}{\numberline {1}摘要}{2}{section.1}%
-\contentsline {section}{\numberline {2}实验原理}{2}{section.2}%
-\contentsline {section}{\numberline {3}实验过程与数据分析}{2}{section.3}%
-\contentsline {paragraph}{}{2}{paragraph*.1}%
-\contentsline {section}{\numberline {4}分析与讨论}{2}{section.4}%
-\contentsline {section}{\numberline {5}原始数据}{3}{section.5}%
+\contentsline {section}{\numberline {1}研究背景与意义}{2}{section.1}%
+\contentsline {section}{\numberline {2}国内外研究现状}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1} CGN 之前的工作}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2} CGN 模型提出}{3}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}局限与发展}{3}{subsection.2.3}%
+\contentsline {section}{\numberline {3}研究思路}{4}{section.3}%
+\contentsline {section}{\numberline {4}论文引用网络分析}{4}{section.4}%
+\contentsline {section}{\numberline {5}亚马逊共购网络分析}{4}{section.5}%
