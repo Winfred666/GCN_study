@@ -55,20 +55,24 @@ def sparse_to_tuple(sparse_mx):
 # so only calculate it once before training
 # remember that adj is sparse matrix
 def calculate_hat_A(adj,self_importance=1.0,laplace_norm=True):
-    tilde_A = adj + self_importance * (np.eye(adj.shape[0]))
+    # Create a sparse identity matrix
+    identity = sp.identity(adj.shape[0], format='csr')
+    tilde_A = adj + self_importance * identity
     # get degree matrix
     tilde_D = np.array(adj.sum(1))
     hat_A = None
     if laplace_norm:
         D_m2 = np.power(tilde_D, -0.5).flatten()
         D_m2[np.isinf(D_m2)] = 0.0
-        D_m2 = np.diag(D_m2)
+        # D_m2 = np.diag(D_m2)
+        D_m2 = sp.diags(D_m2, format='csr')
         # get normalized laplace matrix
         hat_A = D_m2.T @ tilde_A @ D_m2 # D^-0.5AD^0.5
     else:
         D_inv = np.power(tilde_D, -1.0).flatten()
         D_inv[np.isinf(D_inv)] = 0.0
-        D_inv = np.diag(D_inv)
+        # D_inv = np.diag(D_inv)
+        D_inv = sp.diags(D_inv, format='csr')
         hat_A = D_inv.T @ tilde_A
     
     return sparse_to_tuple(sp.coo_matrix(hat_A)) # first transform back to sparse matrix
@@ -104,12 +108,13 @@ def preprocess_features(features):
 
 # using cross entrophy loss
 def masked_loss(out, label, mask):
+    # filter the index where label == -1, and delete these terms
+    # print(out.shape,label.shape)
     loss = F.cross_entropy(out, label, reduction='none')
     mask = mask.float()
     mask = mask / mask.mean() # in fact this make all element in mask to 1.
     loss *= mask
-    loss = loss.mean()
-    return loss
+    return loss.mean()
 
 # calculate accuracy
 def masked_acc(out, label, mask):

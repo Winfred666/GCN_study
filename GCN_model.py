@@ -50,3 +50,42 @@ class GCN_Base(nn.Module):
                     loss += p.pow(2).sum()
         return loss
     
+class GCN_FC(GCN_Base):
+    def __init__(self, layer_dims, # essential for all model
+    dropout_rate = 0.5, # normalization technique.
+    input_nonezero_num = 0): # because the first input feature will probably be sparse
+        super().__init__(layer_dims,dropout_rate,input_nonezero_num)
+        #下面是新增全连接层，按照论文修改
+        self.fc_layers = nn.Sequential()
+
+    def forward(self, inputs):
+        x,hat_A = inputs
+        for layer in self.layers:
+            # check all output after one layer
+            # print(f'After layer: {x.sum()}')
+            x = layer((x,hat_A))
+        
+        ###
+        #需要修改x的形状才能作为全连接层的输入，之后再改回来
+        #原先x是(num_nodes, in_feature_dim),分别代表每个图节点数,每个节点的特征向量维度
+        #x = x.view(-1, self.layer_dims[-1])  # 将节点特征展开为 (batch_size * num_nodes, feature_dim)
+        x = x.float()#原先的x和hat_A都是float64也就是double类型的,而全连接层的参数都是float32也就是float类型的,所以要转化一下
+        x = self.fc_layers(x)
+        x = x.double()#再变回float64
+        #x = x.view(-1, hat_A.size(0), self.fc_dims[-1])  # 恢复形状为 (batch_size, num_nodes, output_dim)
+        ###
+        return x,hat_A
+
+    # as the paper suggest , use L2 only at the update of first convolution layer.
+    def L2_reg_layer1(self):
+        layers = self.layers[:-1] # get all layers except the last
+        # wander what to do with regulation loss in Full connectted layer.
+        loss = None
+        # add every sum of square of parameters
+        for layer in layers:
+            for p in layer.parameters():
+                if loss is None:
+                    loss = p.pow(2).sum()
+                else:
+                    loss += p.pow(2).sum()
+        return loss

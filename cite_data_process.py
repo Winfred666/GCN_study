@@ -84,7 +84,8 @@ def load_siteseer(dataset_str):
     features = sp.vstack((allx, tx)).tolil()
     # prepare the adjacency matrix
     features[test_idx_reorder, :] = features[test_idx_range, :]
-    adj = nx.adjacency_matrix(nx.from_dict_of_lists(graph))
+    
+    adj = nx.to_scipy_sparse_matrix(nx.from_dict_of_lists(graph))
 
     # prepare the label, need to concat label of tx here.
     labels = np.vstack((ally, ty))

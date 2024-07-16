@@ -11,6 +11,7 @@
 \usepackage{setspace}
 \usepackage{hyperref} % For clickable links in the table of contents
 \usepackage{tocloft} % For customizing the table of contents
+\usepackage{array}
 
 \geometry{a4paper}
 \setstretch{1.25} % Set line spacing to 1.25
@@ -157,17 +158,40 @@ g_{\theta}\star x=U g_{\theta}U^{T}x
 特征工程、网络搭建技巧，实现 Pytorch 版本的模型，并尽可能多地扩展可调参数。
     \item 利用著名的 Citeseer 引用网络数据集，对比实验数据和论文数据，验证代码正确性。
     \item 使用 Optuna 等超参数优化工具，对 GCN 模型的超参数进行调优，以提高模型的性能。
-    \item 借助正确的模型，对商品共购网络进行分析，探讨该模型在商品推荐领域的分类表现。可视化商品共购网络，分析商品之间的关联性。
-    \item 有了以上模型和实验结果，我们将进一步探讨 GCN 在半监督学习中的极限训练数据大小，得到该模型学习能力的更直观认识。
+    \item 借助正确的模型，对大型商品共购网络进行分析，探讨该模型在商品推荐领域的分类表现。并借该大型数据集，探讨模型的可扩展性，以及在极端训练集情况上的表现。
+    \item 有了以上模型和实验结果，我们将清晰了解该模型的优点和局限性，就其缺点，结合一些优化 GCN 的论文，进行一些尝试性的改进。
 \end{enumerate}
 
 
 首先，论文提供的是 tensorflow 版本的 GCN 模型\cite{kipf2017semi}，
-为了匹配现有环境，我们将其改写为 PyTorch 版本。TODO
+为了匹配现有环境，我们将其改写为 PyTorch 版本。
+
+模型的可调节参数如下：
+
+\begin{itemize}
+    \item 隐藏层神经元数量
+    \item 学习率
+    \item 激活函数
+    \item 损失函数
+    \item 正则化项
+    \item Dropout 概率
+
 
 
 \section{论文引用网络分析}
 
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        节点总数 &  3327 & 无向边总数 & 9104 \\
+        \hline
+        客群标签数量 & 6 & 特征维度 & 3703 \\
+        \hline
+    \end{tabular}
+    \caption{亚马逊共购网络数据集情况}
+    \label{tab:amazon-data}
+\end{table}
 
 \begin{figure}[h]
     \centering
@@ -176,8 +200,67 @@ g_{\theta}\star x=U g_{\theta}U^{T}x
     \label{fig:example}
 \end{figure}
 
-
 \section{亚马逊共购网络分析}
+
+
+\subsection*{数据预处理}
+
+亚马逊共购网络和商品分类真值（Ground Truth）数据集 \cite{yang_defining_2012} 将每个商品看成一个节点，这里的商品大部分是书籍、DVD等物品。
+而节点之间的无向边表示两个商品曾经被一同购买，即“共同购买”（Co-purchasing）关系。该数据集的情况大致如下：
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        节点总数 &  334863 & 无向边总数 & 925872 \\
+        \hline
+        最大客群商品数量 & 214 & 最小客群商品数量 & 3 \\
+        \hline
+        图的直径 & 44 & 特征维度 & - \\
+        \hline
+    \end{tabular}
+    \caption{亚马逊共购网络数据集情况}
+    \label{tab:amazon-data}
+\end{table}
+
+
+
+从中可以看出，这是一个大型的无向稀疏图，适用于 GCN 模型的训练。
+而我们的任务是根据共购关系，以及提供的少量商品分类真值数据，达到对全部商品的分类预测，
+从而为买过其中一种商品的用户推荐同类商品，并以此搭建商品客群。
+
+首先，我们对于数据集的划分如下：
+
+
+但是，该数据的节点上并没有商品的特征信息，这使得 GCN 缺失了输入数据。为此，我们需要学习特征工程相关知识，计算商品的特征向量。
+
+方法一是不使用任何特征向量增强训练，而只将 $I_N$ 作为 $X$ 输入模型。这个方法其实是利用图聚合卷积层本身的特征提取能力，在第一层完成特征的提取，而在第二层进行分类工作。
+在论文 \cite{kipf2017semi} 中，作者也使用该方法成功提取了 Zachary’s karate club network 数据集的节点特征。但该方法的代价是更复杂、层数更多的模型，
+如果完全利用 GCN 的第一层来进行邻接特征学习，那么面对大型的图数据，将会对模型调参造成严重的效率影响。因此放弃该方法。
+
+方法二是使用无监督训练提取特征，例如 RandomWalk ，该方法通过图上随机游走的方式，将节点的邻居节点信息融入到节点的特征向量中。其优点是简单易实现，现有的
+Node2vec \cite{grover_node2vec_2016} 等工具正好适用于大型图的特征构建。但缺点是，该方法忽视了节点本身的特征（Side information）。
+以该例而言，商品的价格、种类、评价等信息均无法编码到特征上；而且，该方法在大型图中用时非常长， 30 万节点，大致用了 14 分钟才编码为维数为 16 的特征。
+
+方法三为实际中更常用的，基于元数据的商品特征提取。我们查询到商品 ID 背后的商品元数据信息\cite{leskovec_dynamics_2007}。该数据集最初用于病毒营销检测，
+而我们只利用其商品的属性构建特征向量。但缺点是难度较大，较难评估提取特征向量的好坏。
+
+我们分别按照方法二和方法三提取了特征，并进行对比分析
+
+\subsection*{参数调整与训练}
+
+首先，由于该数据集特别大，涉及邻接矩阵的运算必须全程使用稀疏矩阵，在运算过程中不能创建任何稠密矩阵，否则会报内存不足的错误。
+此外，因为数据规模、图的特征不同，需要采用不同的参数训练。例如，应该在显存允许的情况下，
+增多隐藏层的神经元数量，以使该网络具备学习复杂特征的能力；应该适当降低学习率，以在更复杂的图中更稳健地学习，避免落入局部最优；
+应该使用较高维的特征，如 64 维的神经网络特征，以增强可学习的数据。
+
+\subsection*{实验结果}
+
+
+
+\section{模型优化}
+
+在利用 GCN 网络做出如下实验后，我们了解其局限性，并依此进行了一些优化。
 
 
 
@@ -186,7 +269,7 @@ g_{\theta}\star x=U g_{\theta}U^{T}x
 \cite{yang_revisiting_2016}
 \cite{hammond_wavelets_2009}
 \cite{zeiler_visualizing_2013}
-\cite{yang_defining_2012}
+
 
 \bibliographystyle{plain}
 \bibliography{./report}  %bib文件名

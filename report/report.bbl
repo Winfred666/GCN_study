@@ -1,5 +1,10 @@
 \begin{thebibliography}{1}
 
+\bibitem{grover_node2vec_2016}
+Aditya Grover and Jure Leskovec.
+\newblock node2vec: {Scalable} {Feature} {Learning} for {Networks}, July 2016.
+\newblock arXiv:1607.00653 [cs, stat] rate: 2.
+
 \bibitem{hamilton_inductive_2018}
 William~L. Hamilton, Rex Ying, and Jure Leskovec.
 \newblock Inductive {Representation} {Learning} on {Large} {Graphs}, September 2018.
@@ -13,6 +18,11 @@ David~K. Hammond, Pierre Vandergheynst, and Rémi Gribonval.
 Thomas~N Kipf and Max Welling.
 \newblock Semi-supervised classification with graph convolutional networks.
 \newblock {\em arXiv preprint arXiv:1609.02907}, 2017.
+
+\bibitem{leskovec_dynamics_2007}
+Jure Leskovec, Lada~A. Adamic, and Bernardo~A. Huberman.
+\newblock The dynamics of viral marketing.
+\newblock {\em ACM Transactions on the Web}, 1(1):5, May 2007.
 
 \bibitem{yang_defining_2012}
 Jaewon Yang and Jure Leskovec.

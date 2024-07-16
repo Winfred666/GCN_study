@@ -14,7 +14,9 @@ def train_base(layer_dims, data,
             self_importance = 1.0, laplace_norm = True,
             device = torch.device('cuda') if torch.cuda.is_available() else 'cpu',
             verbose = True):
-
+    
+    torch.cuda.empty_cache()
+    
     if verbose:
         print(f'Using device: {device} \nlayer_dims: {layer_dims}, \ndropout_rate: {dropout_rate}, \nlearning_rate: {learning_rate}, \nweight_decay: {weight_decay}, \nepoch_num: {epoch_num}, \nself_importance: {self_importance}, \nlaplace_norm: {laplace_norm}')
     
@@ -68,7 +70,7 @@ def train_base(layer_dims, data,
         train_acc_list.append(acc.item())
         lost_list.append(loss.item())
 
-        if verbose and epoch % 10 == 0:
+        if verbose and epoch % 1 == 0:
             print(f'Epoch: {epoch}, Loss: {loss.item():.4f}, Train Set Acc: {acc.item():.4f}, Validate Set Acc: {acc_val.item():.4f}')
         
     return net, train_acc_list, val_acc_list, lost_list, out.argmax(dim=1).cpu().detach().numpy()
