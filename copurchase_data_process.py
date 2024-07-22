@@ -86,7 +86,6 @@ def build_feature_vectors(sp_adj,num_nodes,dimensions=500):
     #features = np.array([model.wv[str(node)] for node in range(1,max_id)])  
         #model.wv 是训练好的词向量（特征向量）的集合。通过列表推导式，获取从 0 到 max_id 的每个节点的特征向量，并将其存储为 NumPy 数组。
     
-    dimensions = 16
     features = np.zeros((num_nodes, dimensions))
 
     for node in G.nodes():
@@ -94,3 +93,35 @@ def build_feature_vectors(sp_adj,num_nodes,dimensions=500):
 
     print("Extract the features out")
     return sp.csr_matrix(features)  # 转换为稀疏矩阵
+
+
+def preprocess_graph(adj,labels,train_mask,test_mask, keep_percent=0.1):
+    # 记录原始的节点编号
+    node_id_list = np.arange(len(labels)) + 1
+    # 对于不属于 mask 的闲杂节点，只保留 keep_percent 百分比
+    
+    remove_nodes = np.where(train_mask+test_mask == 0)[0]
+    # 随机挑选剩下的节点
+    remove_nodes = np.random.choice(remove_nodes, int(len(remove_nodes)*(1-keep_percent)), replace=False)
+    print("Remove nodes: ",len(remove_nodes))
+    rest_node = np.ones(len(labels), dtype=bool)
+    rest_node[remove_nodes] = False
+
+    adj = adj[rest_node][:,rest_node]
+    labels = labels[rest_node]
+    train_mask = train_mask[rest_node]
+    test_mask = test_mask[rest_node]
+    node_id_list = node_id_list[rest_node]
+
+    # 删除孤立点，因为无法通过邻接矩阵学习到任何信息
+    adj = nx.from_scipy_sparse_matrix(adj)
+    iso_list = list(nx.isolates(adj))
+    print("Remove isolated nodes: ",len(iso_list))
+    adj.remove_nodes_from(iso_list)
+    labels = np.delete(labels, iso_list, axis=0)
+    train_mask = np.delete(train_mask, iso_list, axis=0)
+    test_mask = np.delete(test_mask, iso_list, axis=0)
+    node_id_list = np.delete(node_id_list, iso_list, axis=0)
+    
+    adj = nx.to_scipy_sparse_matrix(adj)
+    return adj,labels,train_mask,test_mask,node_id_list

@@ -3,6 +3,7 @@
 \usepackage{fontspec} % For font settings
 
 \usepackage{amsmath}
+
 \usepackage{cases}
 \usepackage{graphicx}
 \usepackage[margin=1in]{geometry}
@@ -15,6 +16,7 @@
 \usepackage{subcaption}
 
 \usepackage{amssymb}
+\usepackage{longtable}
 
 \geometry{a4paper}
 \setstretch{1.25} % Set line spacing to 1.25
@@ -78,7 +80,7 @@
 
 \section{国内外研究现状}
 
-\subsection*{ CGN 之前的工作}
+\subsection{ CGN 之前的工作}
 
 早在二十世纪末期，就有卷积神经网络 （CNN） 的概念，但当时的卷积神经网络仅将 不同的滤波器 （Filter） 用于位图即规整的网格图，以采得不同尺度的特征，
 但要将卷积应用于一般图数据，其难点在于一般图特征在不同尺度上的提取。
@@ -100,7 +102,7 @@
 并且，该论文首先提出了 Citeseer 引用网络数据集，用于测试半监督图学习模型的分类能力。
 
 
-\subsection*{ CGN 模型提出}
+\subsection{ CGN 模型提出}
 
 
 GCN 的研究始于 2017 年，由 Kipf 和 Welling 提出的 GCN 模型 \cite{kipf2017semi}，是一种基于图的半监督学习方法，可用于 Citeseer 数据集。
@@ -139,7 +141,7 @@ g_{\theta}\star x=U g_{\theta}U^{T}x
 
 
 
-\subsection*{局限与发展}
+\subsection{局限与发展}
 
 
 但 GCN 并非万能，也存在如下局限性：
@@ -172,11 +174,12 @@ g_{\theta}\star x=U g_{\theta}U^{T}x
 
 首先，最初的 GCN 论文提供的是 tensorflow 版本的 GCN 模型\cite{kipf2017semi}，
 为了匹配现有环境，我们将其改写为 PyTorch 版本。
+模型的可调节参数有：Dropout rate， Learning rate，Weight decay，Epoch number， 
+Self importance （即重归一化公式 $A = A + \lambda I_N$ 中的 $\lambda$  ），
+Is Laplace normalized（是否使用归一化的拉普拉斯矩阵）
 
-模型的可调节参数有：dropout_rate, learning_rate, weight_decay, epoch_num, 
-self_importance （即重归一化公式 $\tilde{A} = A + \lambda I_N$ 中的 $\lambda$ ）,
-laplace_norm（是否使用归一化的拉普拉斯矩阵）
-
+模型的具体实现在 \textit{GCN\_layer.py} 和 \textit{GCN\_model.py} 中，
+训练代码在 \textit{train.py} 中。在复现代码后，接下来拿 Citeseer 数据集作为正确性验证工具。
 
 \section{论文引用网络分析}
 
@@ -202,7 +205,7 @@ Citeseer 引用网络集 \cite{yang_revisiting_2016} 的数据情况如表\ref{t
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{assets/citeseer-accplot.png}
-    \caption{所复现 GCN 模型在 CiteSeer 上的准确率和 Loss变化}
+    \caption{所复现 GCN 模型在 Citeseer 上的准确率和 Loss变化}
     \label{fig:citeseer-accbase}
 \end{figure}
 
@@ -214,7 +217,7 @@ Citeseer 引用网络集 \cite{yang_revisiting_2016} 的数据情况如表\ref{t
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{assets/citeseer-adj.png}
-    \caption{CiteSeer 邻接图的可视化结果，节点颜色为分类结果}
+    \caption{Citeseer 邻接图的可视化结果，节点颜色为分类结果}
     \label{fig:citeseer-adjgraph}
 \end{figure}
 
@@ -223,7 +226,7 @@ Citeseer 引用网络集 \cite{yang_revisiting_2016} 的数据情况如表\ref{t
 
 出于这种想法，我们使用 t-SNE 算法对节点的嵌入特征进行降维，
 最后使用 \textit{seaborn} 可视化，得到了如\ref{fig:citeseer-gt}和\ref{fig:citeseer-gcn}
-两个分类结果，可以发现，在 CiteSeer 中，特征越相似的节点约有可能被分为同一类。
+两个分类结果，可以发现，在 Citeseer 中，特征越相似的节点约有可能被分为同一类。
 而一些特征不接近，节点散落四处的类（如黄色的节点），GCN 模型无法很好地分类，
 这更说明，只有同时兼顾邻接矩阵和节点特征，全面挖掘已有数据，才能获得更好的分类结果。
 
@@ -232,13 +235,13 @@ Citeseer 引用网络集 \cite{yang_revisiting_2016} 的数据情况如表\ref{t
     \begin{minipage}{0.42\textwidth}
         \centering
         \includegraphics[width=\linewidth]{assets/citeseer-GT.png}
-        \caption{CiteSeer Ground Truth 分类结果}
+        \caption{Citeseer Ground Truth 分类结果}
         \label{fig:citeseer-gt}
     \end{minipage}\hfill
     \begin{minipage}{0.42\textwidth}
         \centering
         \includegraphics[width=\linewidth]{assets/citeseer-GCN.png}
-        \caption{CiteSeer GCN 模型分类结果}
+        \caption{Citeseer GCN 模型分类结果}
         \label{fig:citeseer-gcn}
     \end{minipage}\hfill
 \end{figure}
@@ -290,7 +293,7 @@ Node2vec \cite{grover_node2vec_2016} 等工具正好适用于大型图的特征�
 
 我们先使用第二种编码方式进行训练。方法三留待未来实践。
 
-鉴于 GPU 资源有限，以及一些客群过小，只有 3 个节点的情况，我们只挑选前 500 个大客群训练分类，并且每个客群只取 80\% 的节点学习，
+鉴于 GPU 资源有限，以及一些客群过小，只有 3 个节点的情况，我们只挑选前 250 个大客群训练分类，并且每个客群只取 80\% 的节点学习，
 使得训练节点数目为 3571 ，测试节点数目为 981，其余小群节点标签也将被学习，分类到这些大群中。
 具体的数据集处理和划分方法见代码中的 \textit{copurchase\_data\_process\.py}
 和 \textit{copurchasing\_analysis\.ipynb} 文件。
@@ -310,16 +313,15 @@ Node2vec \cite{grover_node2vec_2016} 等工具正好适用于大型图的特征�
     \begin{minipage}{0.42\textwidth}
         \centering
         \includegraphics[width=\linewidth]{assets/pur-0.png}
-        \caption{层级结构为 [16,22,500]}
+        \caption{层级结构为 [16,22,500] GCN共购网络训练结果}
         \label{fig:GCN-pur1}
     \end{minipage}\hfill
     \begin{minipage}{0.42\textwidth}
         \centering
         \includegraphics[width=\linewidth]{assets/pur-1.png}
-        \caption{层级结构为 [16,60,60,500]}
+        \caption{层级结构为 [16,60,60,500] GCN共购网络训练结果}
         \label{fig:GCN-pur2}
     \end{minipage}\hfill
-    \caption{不同层级结构的 GCN 在共购网络上的训练结果}
 \end{figure}
 
 从 \ref{fig:GCN-pur1} 到 \ref{fig:GCN-pur2} 的变化可以看出，
@@ -366,7 +368,7 @@ Node2vec \cite{grover_node2vec_2016} 等工具正好适用于大型图的特征�
 我们最终得到了一个和单纯的GCN模型水平相近的新模型，其分类准确率最终在 71\% 左右。
 而且，相比于单纯的GCN模型，该模型由于层数更多，参数过于复杂，
 于是其收敛速度受到参数初始化的影响，如\ref{fig:GCN_linear} 所示，当参数初始化因随机性而波动时，在曲线上容易出现很多“平台”，
-这说明，该模型对于 CiteSeer 数据集而言参数过于复杂，需要更好的模型。
+这说明，该模型对于 Citeseer 数据集而言参数过于复杂，需要更好的模型。
 
 \subsection{TO-GCN}
 
@@ -402,7 +404,7 @@ TO-GCN 可以在图卷积过程中优化图的拓扑结构（即使用 学习到
 TO-GCN 联合学习图的拓扑结构参数 $O$ 和分类器的参数 $W$ 来更好地捕捉图的内在信息，参数更多，使得该模型更为灵活
 （传统 GCN 仅优化分类器参数 $W$，忽略了图结构的潜在改进空间）；
 
-对于 CiteSeer 数据集，该优化能将分类准确度提高 2\%，而对于更大的图数据如 PubMed，该优化只能将准确度提高 0.2\% 左右。
+对于 Citeseer 数据集，该优化能将分类准确度提高 2\%，而对于更大的图数据如 PubMed，该优化只能将准确度提高 0.2\% 左右。
 虽然论文中提及 “该模型具有拓展性”，但并没有拿更大的诸如BlogCatalog、共购网络的图数据进行实验，并且就前向传播公式而言，
 只是用矩阵 $O$ 代替 $\hat{A}$ 进行计算，加上交替学习，计算复杂度并未减少。因此预计无法用其优化共购网络。
 
@@ -412,25 +414,68 @@ TO-GCN 联合学习图的拓扑结构参数 $O$ 和分类器的参数 $W$ 来更
 将其视为一个线性模型，省略了非线性的激活函数，提高了计算效率，适合于大规模图数据。
 该论文认为，聚合邻居节点信息是最重要的，而非线性的激活函数可以省略，于是有：
 
-$$
-\hat{\mathrm{Y}}=\mathrm{softmax}\left(\mathrm{\mathsf{S...SSX{\Theta}^{(1)}{\Theta}^{(2)}\cdot\cdot\cdot\Theta^{(K)}}}\right)
-$$
+\[
+\hat{\mathrm{Y}}=\mathrm{softmax}\left(\mathrm{\mathsf{S...SSX \Theta^{(1)} \Theta^{(2)}... \Theta^{(K)}}}\right)
+\]
 
 并且对于缩放算子过度放大小的特征值对应特征，引发过平滑、不稳定的问题，仍然保留了最初 GCN 论文中提到的
 重新归一技巧（Renormalized Trick），和最后的 softmax 分类器。
 于是，一个模型训练问题，便转化为只有一层非线性函数的逻辑回归问题，甚至没有隐藏层。
 
-同样，先用 CiteSeer 检验模型的正确性，设置拉普拉斯矩阵阶数 $ K=6 $ 从 \ref{fig:citeseer-SGC} 
+同样，先用 Citeseer 检验模型的正确性，设置拉普拉斯矩阵阶数 $ K=6 $ 。从 \ref{fig:citeseer-SGC} 
 可以看出，该模型的梯度更新更为平稳，并且只有一层全连接层，训练更为快速。
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{assets/citeseer-SGC.png}
-    \caption{所复现 SGC 模型在 CiteSeer 上的准确率和 Loss变化}
+    \caption{所复现 SGC 模型在 Citeseer 上的准确率和 Loss变化}
     \label{fig:citeseer-SGC}
 \end{figure}
 
-在验证正确性后，将该模型用于训练共购网络。由于其简化的模型结构，在拉普拉斯矩阵的作用阶数为 10。
+在验证正确性后，将该模型用于训练共购网络。
+
+然而，实验效果不佳。花费一定时间排查，
+最终发现两个问题，一个是节点过多导致时间消耗过大，简单模型也难以应用；另一个是特征维数过低导致表征能力不足。
+所以，我们应剪裁训练图，并找到平衡点，因为裁剪过多，邻接矩阵信息也将丢失。最后，我们保留了 25\% 的无分类节点提供邻居信息，
+在共购网络上得到了更好的分类效果：
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{assets/pur2-SGC.png}
+    \caption{所复现 SGC 模型在亚马逊共购网络上的准确率和 Loss变化}
+    \label{fig:pur-SGC}
+\end{figure}
+
+从 \ref{fig:pur-SGC} 可知，在这样的数据配置下，该模型的学习能力有所长进，
+在测试集中也达到了近 10\% 的正确商品推荐预测，即使其泛化能力依然有限。
+结合元数据信息，可以查看该模型推荐的同类商品：
+
+例如，输入 id=39 ，该商品是一本小说：\emph{Night of Many Dreams : A Novel}
+
+而模型将会推荐以下同类商品：
+
+\begin{longtable}{|>{\raggedright\arraybackslash}p{1.5cm}|>{\raggedright\arraybackslash}p{10cm}|>{\raggedright\arraybackslash}p{2cm}|}
+    \hline
+    \textbf{Id} & \textbf{Title} & \textbf{Group} \\
+    \hline
+    330 & Logan's Search (Logan Series, 3rd Book) & Book \\
+    \hline
+    651 & A Winter's Solstice, Vol. 6 & Music \\
+    \hline
+    1822 & Cordina's Crown Jewel & Book \\
+    \hline
+    1974 & The Joy of Pi & Book \\
+    \hline
+    1978 & Come on Christmas & Music \\
+    \hline
+    2113 & Dantes' Inferno: A Dr. Sylvia Strange Novel & Book \\
+    \hline
+    2195 & Coldheart Canyon: A Hollywood Ghost Story & Book \\
+    \hline
+\end{longtable}
+
+
+推荐表中也含有不少小说，并且以奇幻冒险居多，可见该营销系统有一定合理性。
 
 \subsection{其他优化}
 
