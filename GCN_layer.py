@@ -72,3 +72,38 @@ class GraphConvolution_Base(nn.Module):
         else:
             output = self.activation(output)
         return output
+
+# this is a fully connected layer that run on sparse cuda, and use dropout
+class SparseLinear(nn.Module):
+    def __init__(self, in_feature_dim, out_feature_dim, activation
+        , dropout_rate = 0, is_sparse_inputs = False, input_nonezero_num = 0):
+        super().__init__()
+        self.in_feature_dim = in_feature_dim
+        self.out_feature_dim = out_feature_dim
+        self.activation = activation
+        self.dropout_rate = dropout_rate
+        self.dropout = nn.Dropout(dropout_rate)
+        self.weight = nn.Parameter(torch.randn(in_feature_dim, out_feature_dim,dtype=float))
+        self.bias = nn.Parameter(torch.zeros(out_feature_dim,dtype=float))
+        self.is_sparse_inputs = is_sparse_inputs
+        self.input_nonezero_num = input_nonezero_num
+        self.init_parameters()
+    
+    def init_parameters(self):
+        nn.init.xavier_uniform_(self.weight)
+        nn.init.zeros_(self.bias)
+    
+    def forward(self, inputs):
+        x = inputs
+        if self.is_sparse_inputs:
+            x = sparse_dropout(x, self.dropout_rate, self.input_nonezero_num)
+            xw = torch.spmm(x, self.weight)
+        else:
+            x = self.dropout(x)
+            xw = torch.mm(x, self.weight)
+        output = xw + self.bias
+        if self.activation == F.softmax:
+            output = self.activation(output, dim=1)
+        else:
+            output = self.activation(output)
+        return output

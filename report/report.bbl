@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
 \bibitem{grover_node2vec_2016}
 Aditya Grover and Jure Leskovec.
@@ -24,18 +24,38 @@ Jure Leskovec, Lada~A. Adamic, and Bernardo~A. Huberman.
 \newblock The dynamics of viral marketing.
 \newblock {\em ACM Transactions on the Web}, 1(1):5, May 2007.
 
+\bibitem{velickovic_graph_2018}
+Petar Veličković, Guillem Cucurull, Arantxa Casanova, Adriana Romero, Pietro Liò, and {Yoshua Bengio}.
+\newblock Graph {Attention} {Networks}, February 2018.
+\newblock arXiv:1710.10903 [cs, stat].
+
+\bibitem{wu_simplifying_2019}
+Felix Wu, Tianyi Zhang, Amauri Holanda~de Souza~Jr., Christopher Fifty, Tao Yu, and Kilian~Q. Weinberger.
+\newblock Simplifying {Graph} {Convolutional} {Networks}, June 2019.
+\newblock arXiv:1902.07153 [cs, stat].
+
+\bibitem{xu_representation_2018}
+Keyulu Xu, Chengtao Li, Yonglong Tian, Tomohiro Sonobe, Ken-ichi Kawarabayashi, and Stefanie Jegelka.
+\newblock Representation {Learning} on {Graphs} with {Jumping} {Knowledge} {Networks}, June 2018.
+\newblock arXiv:1806.03536 [cs, stat].
+
+\bibitem{yan_spatial_2018}
+Sijie Yan, Yuanjun Xiong, and Dahua Lin.
+\newblock Spatial {Temporal} {Graph} {Convolutional} {Networks} for {Skeleton}-{Based} {Action} {Recognition}, January 2018.
+\newblock arXiv:1801.07455 [cs].
+
 \bibitem{yang_defining_2012}
 Jaewon Yang and Jure Leskovec.
 \newblock Defining and {Evaluating} {Network} {Communities} based on {Ground}-truth, May 2012.
+
+\bibitem{yang_2019_topology}
+Liang Yang, Zesheng Kang, Xiaochun Cao, Di~Jin, Bo~Yang, and Yuanfang Guo.
+\newblock Topology optimization based graph convolutional network.
+\newblock {\em Proceedings of the Twenty-Eighth International Joint Conference on Artificial Intelligence (IJCAI-19)}, pages 4054--4060, 2019.
 
 \bibitem{yang_revisiting_2016}
 Zhilin Yang, William~W. Cohen, and Ruslan Salakhutdinov.
 \newblock Revisiting {Semi}-{Supervised} {Learning} with {Graph} {Embeddings}, May 2016.
 \newblock arXiv:1603.08861 [cs] rate: 1.
-
-\bibitem{zeiler_visualizing_2013}
-Matthew~D. Zeiler and Rob Fergus.
-\newblock Visualizing and {Understanding} {Convolutional} {Networks}, November 2013.
-\newblock arXiv:1311.2901 [cs] rate: 1.
 
 \end{thebibliography}

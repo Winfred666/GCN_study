@@ -12,6 +12,9 @@
 \usepackage{hyperref} % For clickable links in the table of contents
 \usepackage{tocloft} % For customizing the table of contents
 \usepackage{array}
+\usepackage{subcaption}
+
+\usepackage{amssymb}
 
 \geometry{a4paper}
 \setstretch{1.25} % Set line spacing to 1.25
@@ -30,6 +33,8 @@
 \titleformat{\section}{\normalfont\Large\bfseries\CJKfontspec{SimHei}}{\thesection}{1em}{}
 \titleformat{\subsection}{\normalfont\large\bfseries\CJKfontspec{SimHei}}{\thesubsection}{1em}{}
 
+\setlength{\extrarowheight}{2pt}  % Adjust this value to control extra row height
+
 
 \title{
 \CJKfontspec{SimHei}\Huge\bfseries 基于图卷积神经网络的商品共购网络分析 \\
@@ -46,8 +51,10 @@
 
 \fancyfoot[C]{\thepage}
 
-\maketitle
 
+\setlength{\extrarowheight}{2pt}  % Adjust this value to control extra row height
+
+\maketitle
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
 \tableofcontents
 \newpage
@@ -71,7 +78,7 @@
 
 \section{国内外研究现状}
 
-\subsection{ CGN 之前的工作}
+\subsection*{ CGN 之前的工作}
 
 早在二十世纪末期，就有卷积神经网络 （CNN） 的概念，但当时的卷积神经网络仅将 不同的滤波器 （Filter） 用于位图即规整的网格图，以采得不同尺度的特征，
 但要将卷积应用于一般图数据，其难点在于一般图特征在不同尺度上的提取。
@@ -93,7 +100,7 @@
 并且，该论文首先提出了 Citeseer 引用网络数据集，用于测试半监督图学习模型的分类能力。
 
 
-\subsection{ CGN 模型提出}
+\subsection*{ CGN 模型提出}
 
 
 GCN 的研究始于 2017 年，由 Kipf 和 Welling 提出的 GCN 模型 \cite{kipf2017semi}，是一种基于图的半监督学习方法，可用于 Citeseer 数据集。
@@ -132,7 +139,7 @@ g_{\theta}\star x=U g_{\theta}U^{T}x
 
 
 
-\subsection{局限与发展}
+\subsection*{局限与发展}
 
 
 但 GCN 并非万能，也存在如下局限性：
@@ -156,29 +163,25 @@ g_{\theta}\star x=U g_{\theta}U^{T}x
 \begin{enumerate}
     \item 了解图神经网络原理， 学习论文和 \href{https://web.stanford.edu/class/cs224w/}{cs224w}  课程中对于 GNN 的相关介绍，以及
 特征工程、网络搭建技巧，实现 Pytorch 版本的模型，并尽可能多地扩展可调参数。
-    \item 利用著名的 Citeseer 引用网络数据集，对比实验数据和论文数据，验证代码正确性。
+    \item 利用著名的 Citeseer \cite{yang_revisiting_2016} 引用网络数据集，对比实验数据和论文数据，验证代码正确性。
     \item 使用 Optuna 等超参数优化工具，对 GCN 模型的超参数进行调优，以提高模型的性能。
-    \item 借助正确的模型，对大型商品共购网络进行分析，探讨该模型在商品推荐领域的分类表现。并借该大型数据集，探讨模型的可扩展性，以及在极端训练集情况上的表现。
-    \item 有了以上模型和实验结果，我们将清晰了解该模型的优点和局限性，就其缺点，结合一些优化 GCN 的论文，进行一些尝试性的改进。
+    \item 借助正确的模型，对大型商品共购网络进行分析，探讨该模型在商品推荐、智能营销领域的分类表现。同时这是一个大型图数据集，我们基于此探讨模型的可扩展性。
+    \item 有了以上模型和实验结果，我们将清晰了解该模型的优点和局限性。于是就其缺点，结合一些优化 GCN 的论文，进行一些尝试性的改进。在本次实验中，
+          我们阅读了 TO-GCN \cite{yang_2019_topology} 和 SGC \cite{wu_simplifying_2019} 两篇论文，最终决定复现后者，将其应用于商品共购网络数据集，以提高模型的性能。
 \end{enumerate}
 
-
-首先，论文提供的是 tensorflow 版本的 GCN 模型\cite{kipf2017semi}，
+首先，最初的 GCN 论文提供的是 tensorflow 版本的 GCN 模型\cite{kipf2017semi}，
 为了匹配现有环境，我们将其改写为 PyTorch 版本。
 
-模型的可调节参数如下：
-
-\begin{itemize}
-    \item 隐藏层神经元数量
-    \item 学习率
-    \item 激活函数
-    \item 损失函数
-    \item 正则化项
-    \item Dropout 概率
-
+模型的可调节参数有：dropout_rate, learning_rate, weight_decay, epoch_num, 
+self_importance （即重归一化公式 $\tilde{A} = A + \lambda I_N$ 中的 $\lambda$ ）,
+laplace_norm（是否使用归一化的拉普拉斯矩阵）
 
 
 \section{论文引用网络分析}
+
+Citeseer 引用网络集 \cite{yang_revisiting_2016} 的数据情况如表\ref{tab:citeseer-table} 所示，
+由于其规模较小，并且大多论文都使用它检验模型，因此在我们复现基本的 GCN 模型时，使用该数据集验证模型的正确性。
 
 \begin{table}[h]
     \centering
@@ -189,19 +192,59 @@ g_{\theta}\star x=U g_{\theta}U^{T}x
         客群标签数量 & 6 & 特征维度 & 3703 \\
         \hline
     \end{tabular}
-    \caption{亚马逊共购网络数据集情况}
-    \label{tab:amazon-data}
+    \caption{论文引用网络数据集情况}
+    \label{tab:citeseer-table}
 \end{table}
+
+于是尝试复现该模型，最后通过该模型的训练结果，如组图\ref{fig:citeseer-accbase}所示，
+与论文一致，验证了模型的正确性。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{assets/citeseer-accplot.png}
+    \caption{所复现 GCN 模型在 CiteSeer 上的准确率和 Loss变化}
+    \label{fig:citeseer-accbase}
+\end{figure}
+
+在 \textit{optuna} 最优化调参的帮助下，GCN模型在测试集上的准确率可达到 71\%，而且由于
+\textit{scipy}中稀疏矩阵计算函数，结合更好的 GPU 硬件环境，计算速度可以达到 2 秒，相比论文中的 7 秒快了不少。
+
+
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{assets/citeseer-adj.png}
-    \caption{Your caption text goes here}
-    \label{fig:example}
+    \caption{CiteSeer 邻接图的可视化结果，节点颜色为分类结果}
+    \label{fig:citeseer-adjgraph}
 \end{figure}
 
-\section{亚马逊共购网络分析}
+最后，我们尝试可视化这些分类。\ref{fig:citeseer-adjgraph} 直接根据邻接矩阵作图，可视化效果不佳，不同类的节点混杂在一起，
+但这一现象也说明，邻接矩阵并不是唯一的分类信息，有时候节点的高维嵌入特征蕴含着更重要的信息。
 
+出于这种想法，我们使用 t-SNE 算法对节点的嵌入特征进行降维，
+最后使用 \textit{seaborn} 可视化，得到了如\ref{fig:citeseer-gt}和\ref{fig:citeseer-gcn}
+两个分类结果，可以发现，在 CiteSeer 中，特征越相似的节点约有可能被分为同一类。
+而一些特征不接近，节点散落四处的类（如黄色的节点），GCN 模型无法很好地分类，
+这更说明，只有同时兼顾邻接矩阵和节点特征，全面挖掘已有数据，才能获得更好的分类结果。
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.42\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{assets/citeseer-GT.png}
+        \caption{CiteSeer Ground Truth 分类结果}
+        \label{fig:citeseer-gt}
+    \end{minipage}\hfill
+    \begin{minipage}{0.42\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{assets/citeseer-GCN.png}
+        \caption{CiteSeer GCN 模型分类结果}
+        \label{fig:citeseer-gcn}
+    \end{minipage}\hfill
+\end{figure}
+
+
+\section{亚马逊共购网络分析}
 
 \subsection*{数据预处理}
 
@@ -216,62 +259,206 @@ g_{\theta}\star x=U g_{\theta}U^{T}x
         \hline
         最大客群商品数量 & 214 & 最小客群商品数量 & 3 \\
         \hline
-        图的直径 & 44 & 特征维度 & - \\
+        图的直径 & 44 & 客群数量 & 75149 \\
         \hline
     \end{tabular}
     \caption{亚马逊共购网络数据集情况}
-    \label{tab:amazon-data}
+    \label{tab:amazon-table}
 \end{table}
-
 
 
 从中可以看出，这是一个大型的无向稀疏图，适用于 GCN 模型的训练。
 而我们的任务是根据共购关系，以及提供的少量商品分类真值数据，达到对全部商品的分类预测，
 从而为买过其中一种商品的用户推荐同类商品，并以此搭建商品客群。
 
-首先，我们对于数据集的划分如下：
-
-
 但是，该数据的节点上并没有商品的特征信息，这使得 GCN 缺失了输入数据。为此，我们需要学习特征工程相关知识，计算商品的特征向量。
 
 方法一是不使用任何特征向量增强训练，而只将 $I_N$ 作为 $X$ 输入模型。这个方法其实是利用图聚合卷积层本身的特征提取能力，在第一层完成特征的提取，而在第二层进行分类工作。
 在论文 \cite{kipf2017semi} 中，作者也使用该方法成功提取了 Zachary’s karate club network 数据集的节点特征。但该方法的代价是更复杂、层数更多的模型，
-如果完全利用 GCN 的第一层来进行邻接特征学习，那么面对大型的图数据，将会对模型调参造成严重的效率影响。因此放弃该方法。
+如果完全利用 GCN 的第一层来进行邻接特征学习，那么面对大型的图数据，将会对模型调参造成效率影响。
 
 方法二是使用无监督训练提取特征，例如 RandomWalk ，该方法通过图上随机游走的方式，将节点的邻居节点信息融入到节点的特征向量中。其优点是简单易实现，现有的
 Node2vec \cite{grover_node2vec_2016} 等工具正好适用于大型图的特征构建。但缺点是，该方法忽视了节点本身的特征（Side information）。
-以该例而言，商品的价格、种类、评价等信息均无法编码到特征上；而且，该方法在大型图中用时非常长， 30 万节点，大致用了 14 分钟才编码为维数为 16 的特征。
+以该例而言，商品的价格、种类、评价等信息均无法编码到特征上；而且，该方法在大型图中用时非常长， 30 万节点，大致用了 14 分钟才编码为维数为 16 的低维特征。
 
-方法三为实际中更常用的，基于元数据的商品特征提取。我们查询到商品 ID 背后的商品元数据信息\cite{leskovec_dynamics_2007}。该数据集最初用于病毒营销检测，
-而我们只利用其商品的属性构建特征向量。但缺点是难度较大，较难评估提取特征向量的好坏。
+方法三为实际中更常用的，基于元数据的商品特征提取。
+我们查询到商品 ID 背后的商品元数据信息 \cite{leskovec_dynamics_2007}。
+该数据集最初用于病毒营销检测，
+而我们只利用其商品的属性构建特征向量。
+这涉及更多特征工程和知识图谱相关的知识。
+其缺点是难度较大，较难评估提取特征向量的好坏。
 
-我们分别按照方法二和方法三提取了特征，并进行对比分析
+我们先使用第二种编码方式进行训练。方法三留待未来实践。
+
+鉴于 GPU 资源有限，以及一些客群过小，只有 3 个节点的情况，我们只挑选前 500 个大客群训练分类，并且每个客群只取 80\% 的节点学习，
+使得训练节点数目为 3571 ，测试节点数目为 981，其余小群节点标签也将被学习，分类到这些大群中。
+具体的数据集处理和划分方法见代码中的 \textit{copurchase\_data\_process\.py}
+和 \textit{copurchasing\_analysis\.ipynb} 文件。
 
 \subsection*{参数调整与训练}
 
-首先，由于该数据集特别大，涉及邻接矩阵的运算必须全程使用稀疏矩阵，在运算过程中不能创建任何稠密矩阵，否则会报内存不足的错误。
-此外，因为数据规模、图的特征不同，需要采用不同的参数训练。例如，应该在显存允许的情况下，
-增多隐藏层的神经元数量，以使该网络具备学习复杂特征的能力；应该适当降低学习率，以在更复杂的图中更稳健地学习，避免落入局部最优；
-应该使用较高维的特征，如 64 维的神经网络特征，以增强可学习的数据。
+由于该数据集特别大，涉及邻接矩阵的运算必须全程使用稀疏矩阵，在运算过程中不能创建任何稠密矩阵，否则会报内存不足的错误。
+此外，因为数据规模、图的特征不同，需要采用不同的参数训练。
+
+一些训练技巧如下：在显存允许的情况下，增多隐藏层的神经元数量，以使该网络具备学习复杂特征的能力；
+应该适当降低学习率，以在更复杂的图中更稳健地学习，避免落入局部最优。
 
 \subsection*{实验结果}
 
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.42\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{assets/pur-0.png}
+        \caption{层级结构为 [16,22,500]}
+        \label{fig:GCN-pur1}
+    \end{minipage}\hfill
+    \begin{minipage}{0.42\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{assets/pur-1.png}
+        \caption{层级结构为 [16,60,60,500]}
+        \label{fig:GCN-pur2}
+    \end{minipage}\hfill
+    \caption{不同层级结构的 GCN 在共购网络上的训练结果}
+\end{figure}
 
+从 \ref{fig:GCN-pur1} 到 \ref{fig:GCN-pur2} 的变化可以看出，
+对于节点达 30 万的图数据，使用更为复杂的模型，才能学习到更多的特征，提高分类准确度。
+并且在如此复杂的图中，但致命的是，GCN模型在大型图数据上，外加更复杂的特征，
+使得训练成本过高，训练时间过长，且最终只达到 3\% 的分类准确度。更高的维度只会使得 GPU 显存不足。
+因此，最初的模型具有如下缺点：可扩展性不强、内存占用高、图拓扑结构（邻接矩阵）的学习能力有限。
 
 \section{模型优化}
 
-在利用 GCN 网络做出如下实验后，我们了解其局限性，并依此进行了一些优化。
+在利用 GCN 网络做出以上实验后，我们了解其局限性，并依此进行了一些优化。
 
+\subsection{GCN+FC}
 
+考虑到众多的图学习方法，将GCN和其他模型进行结合是一个相当自然的想法。
+因此我们首先尝试使用最简单的线性全链接层加入到GCN中。
 
-\cite{hamilton_inductive_2018}
+在最初版本的GCN代码实现中，我们使用了[3703,80,22]这样的三个layer dimension实现了高维特征向量到22个特征的压缩。
+紧接着加上两层[22,6]的线性全连接层。
+在前向传播函数forward中，我们首先经过GCN的神经网络层，再经过线性全连接层，实现两种图学习算法的结合。
 
-\cite{yang_revisiting_2016}
-\cite{hammond_wavelets_2009}
-\cite{zeiler_visualizing_2013}
+实现GCN的改动后，同样使用Citeseer数据集进行模型的参数调整和训练。将经过optuna训练过的较优参数作为输入，并且重复多次训练，
+可以得到如下的曲线：
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{assets/citeseer-lin1.png}
+    \end{minipage}\hfill
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{assets/citeseer-lin2.png}
+    \end{minipage}\hfill
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{assets/citeseer-lin3.png}
+    \end{minipage}
+    \caption{GCN+线性全链接层平行测试结果}
+    \label{fig:GCN_linear}
+\end{figure}
+
+这张图给出的准确率趋势和损失值趋势符合我们的预期，
+我们最终得到了一个和单纯的GCN模型水平相近的新模型，其分类准确率最终在 71\% 左右。
+而且，相比于单纯的GCN模型，该模型由于层数更多，参数过于复杂，
+于是其收敛速度受到参数初始化的影响，如\ref{fig:GCN_linear} 所示，当参数初始化因随机性而波动时，在曲线上容易出现很多“平台”，
+这说明，该模型对于 CiteSeer 数据集而言参数过于复杂，需要更好的模型。
+
+\subsection{TO-GCN}
+
+鉴于 GCN 模型依靠一个固定的拉普拉斯算子 $\tilde{D}^{-\frac{1}{2}}\tilde{A}\tilde{D}^{-\frac{1}{2}}$ 
+处理并利用邻接矩阵，不够灵活，
+论文\cite{yang_2019_topology}基于拓扑优化网络对GCN进行了改良，
+该方法的核心思想是通过标签传播和优化算法来共同学习图的拓扑结构和全连接网络（Fully Connected Network, FCN）的参数，从而提高节点分类的性能。
+具体流程如下：
+\begin{enumerate}
+    \item must-link 和 cannot-link 约束：既然是半监督学习模型，那么我们通过部分的真值，已经知道一些节点必属于同一类，那么模型在预测时绝不应该将这些节点分开，
+        因此对于两个分类相同的节点 $v_i$ 和 $v_j$ ，$Q_{ij} = 1$，将其与预测值中，两节点被分到同一类的概率矩阵 $O = [O_{i j}]\subseteq Y Y^{T}\in \mathbb{R}^{N \times N} $ 作差，
+        计算两个矩阵的距离，添加到 $Loss$ 函数中，以惩罚绝对错误的分类。类似地，对于绝对不可能分到同一类的节点，也可以设置惩罚项，如对于分类不同的节点，设置 $G_{ij} = 1$ 。
+    \item 网络拓扑结构优化：使用给定的标签对网络拓扑进行优化，并保持拓扑是非负的，将优化建模为标签传播过程，并且假设图中邻近的顶点倾向于共享相同的标签
+        ，结合上述两个约束规则，最终可以得到网络拓扑优化方法的目标函数为：
+        \begin{equation}
+            \min_O \frac{1}{2} \text{Tr}((L + \alpha G) O) + \lambda \|O - Q\|_F^2
+        \end{equation}
+    \item TO-GCN模型：结合了分类损失和拓扑优化损失，以达到同时优化图卷积网络的权重W和图的拓扑结构O的目标。
+        \begin{equation}
+            \min_{W, O} L_{\text{classify}} + L_{\text{refine}} = \min_{W, O} - \sum_{n \in V_l} \sum_{c=1}^C Z_{nc} \log(H_{nc}) + \text{Tr}((L + \alpha G) O) + \frac{\lambda}{2} \|O - Q\|_F^2
+        \end{equation}
+        其中 $L_{\text{classify}}$ 是分类损失，$L_{\text{refine}}$是拓扑优化损失，即以上约束惩罚项。
+    \item 优化算法：采用交替优化策略，固定一个变量更新另一个变量，直到收敛。通过梯度下降法优化目标函数，因为交叉熵损失项没有封闭解。
+        其中梯度下降法的参数更新规则如下：
+        \begin{equation}
+            \frac{\partial \mathcal{L}}{\partial O} = (H - Z)W^T X^T + (L + \alpha G - \lambda Q) + \lambda O.
+        \end{equation}
+\end{enumerate}
+
+总的来说，TO-GCN有如下优势：
+TO-GCN 可以在图卷积过程中优化图的拓扑结构（即使用 学习到的 $O$ 而非直接使用 邻接矩阵 $A$ 或 拉普拉斯矩阵 $L$），通过调整图的边权重，强化类内边，弱化类间边，
+来提高节点分类的性能，至少保证已有标签误判率降低（传统的 GCN 直接使用固定的邻接矩阵投入计算，这可能不是最优的）；
+TO-GCN 联合学习图的拓扑结构参数 $O$ 和分类器的参数 $W$ 来更好地捕捉图的内在信息，参数更多，使得该模型更为灵活
+（传统 GCN 仅优化分类器参数 $W$，忽略了图结构的潜在改进空间）；
+
+对于 CiteSeer 数据集，该优化能将分类准确度提高 2\%，而对于更大的图数据如 PubMed，该优化只能将准确度提高 0.2\% 左右。
+虽然论文中提及 “该模型具有拓展性”，但并没有拿更大的诸如BlogCatalog、共购网络的图数据进行实验，并且就前向传播公式而言，
+只是用矩阵 $O$ 代替 $\hat{A}$ 进行计算，加上交替学习，计算复杂度并未减少。因此预计无法用其优化共购网络。
+
+\subsection{SGC}
+
+面对大型的图数据，需要更加简化的模型。Simple Graph Convolution (SGC)\cite{wu_simplifying_2019}即通过简化图卷积过程，
+将其视为一个线性模型，省略了非线性的激活函数，提高了计算效率，适合于大规模图数据。
+该论文认为，聚合邻居节点信息是最重要的，而非线性的激活函数可以省略，于是有：
+
+$$
+\hat{\mathrm{Y}}=\mathrm{softmax}\left(\mathrm{\mathsf{S...SSX{\Theta}^{(1)}{\Theta}^{(2)}\cdot\cdot\cdot\Theta^{(K)}}}\right)
+$$
+
+并且对于缩放算子过度放大小的特征值对应特征，引发过平滑、不稳定的问题，仍然保留了最初 GCN 论文中提到的
+重新归一技巧（Renormalized Trick），和最后的 softmax 分类器。
+于是，一个模型训练问题，便转化为只有一层非线性函数的逻辑回归问题，甚至没有隐藏层。
+
+同样，先用 CiteSeer 检验模型的正确性，设置拉普拉斯矩阵阶数 $ K=6 $ 从 \ref{fig:citeseer-SGC} 
+可以看出，该模型的梯度更新更为平稳，并且只有一层全连接层，训练更为快速。
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{assets/citeseer-SGC.png}
+    \caption{所复现 SGC 模型在 CiteSeer 上的准确率和 Loss变化}
+    \label{fig:citeseer-SGC}
+\end{figure}
+
+在验证正确性后，将该模型用于训练共购网络。由于其简化的模型结构，在拉普拉斯矩阵的作用阶数为 10。
+
+\subsection{其他优化}
+
+我们还可以进行其他方面的改进来优化原始的GCN。
+
+从GCN本身来说，可以有如下改进：
+\begin{enumerate}
+    \item 结构改进：探索不同的图卷积结构，如更深的网络、残差连接、跳跃连接等，以提高模型的表达能力。
+    \item 聚合改进：研究如何根据节点的特征或邻居的重要性动态调整聚合方式，从而更好地捕捉图结构中的信息。
+    \item 降低开销：针对大规模图数据，开发高效的图卷积算法，如采样技术、近似推理方法等，以减少计算和内存开销。
+    \item 图数据增强：通过生成对抗网络（GAN）或其他生成模型，增强图数据，以提高模型的鲁棒性。
+    \item 特定优化：针对特定应用（如推荐系统、社交网络分析等），设计专门的图卷积结构或训练策略，以提高性能。
+\end{enumerate}
+
+从GCN变体来说，也已经有多种全新的模型：
+\begin{enumerate}
+    \item GraphSAGE\cite{hamilton_inductive_2018}：通过采样邻居节点并聚合其特征，允许模型在大规模图上进行训练，具有归纳（inductive）能力，支持动态更新和增量学习，有利于不断演变的、大型、低维特征的一般图学习。
+    \item Graph Attention Network (GAT)\cite{velickovic_graph_2018}：引入注意力机制，使得模型能够动态地为不同邻居分配不同的权重，增强了对重要邻居的关注，适用于带权重边、中小型的、
+        有向图的学习，因为通过添加算子，计算复杂度加强。
+    \item Graph Convolutional Network with Jumping Knowledge (JK-GCN)\cite{xu_representation_2018}：通过跳跃连接结合不同层的特征，以增强信息传播，改善深层网络的学习能力。
+    \item Spatial-Temporal Graph Convolutional Network (ST-GCN)\cite{yan_spatial_2018}：专注于时间序列数据的图卷积，结合空间和时间信息，广泛应用于交通预测等领域。
+\end{enumerate}
+
+以上的这些变体各自针对不同的问题和数据特点进行了优化，提升了GCN的灵活性和应用范围，值得我们进行进一步的研究。
 
 
 \bibliographystyle{plain}
 \bibliography{./report}  %bib文件名
 
 \end{document}
+

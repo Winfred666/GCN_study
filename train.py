@@ -2,18 +2,21 @@ import torch.optim as optim
 import torch
 import torch.nn as nn
 import numpy as np
-from GCN_model import GCN_Base
+from GCN_model import GCN_Base, GCN_FC, GCN_Simplify
 from utils import calculate_hat_A, masked_loss, masked_acc, preprocess_features
 
 # here should set some parameter for training
 # @data: the data for training, including adj , x(features), y(label), mask(indicate which is training data)
 # adj: N*N sparse matrix, x: N*F sparse matrix, label: N vector, train_mask: N vector, loss_mask: N vector
-def train_base(layer_dims, data,
+
+def _train(layer_dims, data,
             dropout_rate = 0.2,learning_rate = 0.01, weight_decay = 0.0001, # some hyperparameters
             epoch_num = 200,
             self_importance = 1.0, laplace_norm = True,
             device = torch.device('cuda') if torch.cuda.is_available() else 'cpu',
-            verbose = True):
+            verbose = True,
+            fc_dims = None,
+            SGC_degree = None):
     
     torch.cuda.empty_cache()
     
@@ -35,8 +38,18 @@ def train_base(layer_dims, data,
 
     
     input_nonezero_num = x._nnz() # get the number of none zero element in input feature(sparse)
-    net = GCN_Base(layer_dims, dropout_rate, input_nonezero_num)
-
+    net = None
+    if fc_dims == None:
+        if SGC_degree == None:
+            net = GCN_Base(layer_dims, dropout_rate, input_nonezero_num)
+        else:
+            net = GCN_Simplify(layer_dims[0],layer_dims[1])
+            # multiply K times, means K layer of A_hat first.
+            for i in range(SGC_degree):
+                x = torch.spmm(hat_A, x)
+    else:
+        net = GCN_FC(layer_dims, fc_dims, dropout_rate, input_nonezero_num)
+    
     net.to(device)
     optimizer = optim.Adam(net.parameters(), lr=learning_rate)
 
@@ -62,21 +75,51 @@ def train_base(layer_dims, data,
         # for param in net.parameters():
         #     if param.grad is not None:
         #         print(param.grad.data.sum())
-        
-        out = net((x, hat_A))[0]
-        acc = masked_acc(out, y, train_mask) # get accuracy on train set
-        acc_val = masked_acc(out, y, validate_mask) # get accuracy on validate set
-        val_acc_list.append(acc_val.item())
-        train_acc_list.append(acc.item())
-        lost_list.append(loss.item())
+        with torch.no_grad():
+            out = net((x, hat_A))[0]
+            acc = masked_acc(out, y, train_mask) # get accuracy on train set
+            acc_val = masked_acc(out, y, validate_mask) # get accuracy on validate set
+            val_acc_list.append(acc_val.item())
+            train_acc_list.append(acc.item())
+            lost_list.append(loss.item())
 
-        if verbose and epoch % 1 == 0:
-            print(f'Epoch: {epoch}, Loss: {loss.item():.4f}, Train Set Acc: {acc.item():.4f}, Validate Set Acc: {acc_val.item():.4f}')
+            if verbose and epoch % 1 == 0:
+                print(f'Epoch: {epoch}, Loss: {loss.item():.4f}, Train Set Acc: {acc.item():.4f}, Validate Set Acc: {acc_val.item():.4f}')
         
     return net, train_acc_list, val_acc_list, lost_list, out.argmax(dim=1).cpu().detach().numpy()
 
 
+def train_base(layer_dims, data,
+            dropout_rate = 0.2,learning_rate = 0.01, weight_decay = 0.0001, # some hyperparameters
+            epoch_num = 200,
+            self_importance = 1.0, laplace_norm = True,
+            device = torch.device('cuda') if torch.cuda.is_available() else 'cpu',
+            verbose = True):
+    return _train(layer_dims, data, 
+    dropout_rate, learning_rate, weight_decay, 
+    epoch_num, self_importance, laplace_norm, device, verbose)
 
+
+def train_fc(layer_dims,fc_dims , data,
+            dropout_rate = 0.2,learning_rate = 0.01, weight_decay = 0.0001, # some hyperparameters
+            epoch_num = 200,
+            self_importance = 1.0, laplace_norm = True,
+            device = torch.device('cuda') if torch.cuda.is_available() else 'cpu',
+            verbose = True):
+    return _train(layer_dims, data, 
+    dropout_rate, learning_rate, weight_decay, 
+    epoch_num, self_importance, laplace_norm, device, verbose, fc_dims)
+
+
+def train_sgc(layer_dims, data,degree,
+            learning_rate = 0.01, weight_decay = 0.0001, # some hyperparameters
+            epoch_num = 200,
+            self_importance = 1.0, laplace_norm = True,
+            device = torch.device('cuda') if torch.cuda.is_available() else 'cpu',
+            verbose = True):
+    return _train(layer_dims, data, 
+    0, learning_rate, weight_decay, 
+    epoch_num, self_importance, laplace_norm, device, verbose, None, degree)
 
 def data_to_tensor(data, device):
     adj, x, y, train_mask, validate_mask = data
@@ -88,7 +131,6 @@ def data_to_tensor(data, device):
     
     validate_mask = torch.from_numpy(validate_mask.astype(int)).to(device)
     train_mask = torch.from_numpy(train_mask.astype(int)).to(device)
-    
 
     def to_tenser_sparse(feature_x):
         feature_x = preprocess_features(feature_x)

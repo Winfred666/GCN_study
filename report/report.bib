@@ -37,6 +37,22 @@ rate: 1},
 }
 
 
+@misc{velickovic_graph_2018,
+	title = {Graph {Attention} {Networks}},
+	url = {http://arxiv.org/abs/1710.10903},
+	doi = {10.48550/arXiv.1710.10903},
+	abstract = {We present graph attention networks (GATs), novel neural network architectures that operate on graph-structured data, leveraging masked self-attentional layers to address the shortcomings of prior methods based on graph convolutions or their approximations. By stacking layers in which nodes are able to attend over their neighborhoods' features, we enable (implicitly) specifying different weights to different nodes in a neighborhood, without requiring any kind of costly matrix operation (such as inversion) or depending on knowing the graph structure upfront. In this way, we address several key challenges of spectral-based graph neural networks simultaneously, and make our model readily applicable to inductive as well as transductive problems. Our GAT models have achieved or matched state-of-the-art results across four established transductive and inductive graph benchmarks: the Cora, Citeseer and Pubmed citation network datasets, as well as a protein-protein interaction dataset (wherein test graphs remain unseen during training).},
+	urldate = {2024-07-07},
+	publisher = {arXiv},
+	author = {Veličković, Petar and Cucurull, Guillem and Casanova, Arantxa and Romero, Adriana and Liò, Pietro and {Yoshua Bengio}},
+	month = feb,
+	year = {2018},
+	note = {arXiv:1710.10903 [cs, stat]},
+	keywords = {Computer Science - Machine Learning, Computer Science - Artificial Intelligence, Computer Science - Social and Information Networks, Statistics - Machine Learning, \#代码},
+	file = {arXiv.org Snapshot:C\:\\My_CS\\学习资料\\Zotero\\storage\\AMVREFF6\\1710.html:text/html;Graph Attention Networks_2018_Veličković et al.pdf:C\:\\Users\\Winfred X\\OneDrive\\zoteroPDF\\Graph Attention Networks_2018_Veličković et al.pdf:application/pdf},
+}
+
+
 @misc{hamilton_inductive_2018,
 	title = {Inductive {Representation} {Learning} on {Large} {Graphs}},
 	url = {http://arxiv.org/abs/1706.02216},
@@ -131,4 +147,62 @@ rate: 2},
 	year = {2007},
 	pages = {5},
 	file = {Leskovec 等 - 2007 - The dynamics of viral marketing.pdf:C\:\\My_CS\\学习资料\\Zotero\\storage\\6AAGG6TU\\Leskovec 等 - 2007 - The dynamics of viral marketing.pdf:application/pdf},
+}
+
+@article{yang_2019_topology,
+  title={Topology Optimization based Graph Convolutional Network},
+  author={Yang, Liang and Kang, Zesheng and Cao, Xiaochun and Jin, Di and Yang, Bo and Guo, Yuanfang},
+  journal={Proceedings of the Twenty-Eighth International Joint Conference on Artificial Intelligence (IJCAI-19)},
+  year={2019},
+  pages={4054-4060}
+}
+
+
+
+@misc{xu_representation_2018,
+	title = {Representation {Learning} on {Graphs} with {Jumping} {Knowledge} {Networks}},
+	url = {http://arxiv.org/abs/1806.03536},
+	doi = {10.48550/arXiv.1806.03536},
+	abstract = {Recent deep learning approaches for representation learning on graphs follow a neighborhood aggregation procedure. We analyze some important properties of these models, and propose a strategy to overcome those. In particular, the range of "neighboring" nodes that a node's representation draws from strongly depends on the graph structure, analogous to the spread of a random walk. To adapt to local neighborhood properties and tasks, we explore an architecture -- jumping knowledge (JK) networks -- that flexibly leverages, for each node, different neighborhood ranges to enable better structure-aware representation. In a number of experiments on social, bioinformatics and citation networks, we demonstrate that our model achieves state-of-the-art performance. Furthermore, combining the JK framework with models like Graph Convolutional Networks, GraphSAGE and Graph Attention Networks consistently improves those models' performance.},
+	urldate = {2024-07-20},
+	publisher = {arXiv},
+	author = {Xu, Keyulu and Li, Chengtao and Tian, Yonglong and Sonobe, Tomohiro and Kawarabayashi, Ken-ichi and Jegelka, Stefanie},
+	month = jun,
+	year = {2018},
+	note = {arXiv:1806.03536 [cs, stat]},
+	keywords = {Computer Science - Artificial Intelligence, Computer Science - Computer Vision and Pattern Recognition, Computer Science - Machine Learning, Statistics - Machine Learning},
+	annote = {Comment: ICML 2018, accepted as a long oral presentation},
+	file = {arXiv.org Snapshot:C\:\\My_CS\\学习资料\\Zotero\\storage\\HMLZ8R8J\\1806.html:text/html;Representation Learning on Graphs with Jumping Knowledge Networks_2018_Xu et al.pdf:C\:\\Users\\Winfred X\\OneDrive\\zoteroPDF\\Representation Learning on Graphs with Jumping Knowledge Networks_2018_Xu et al.pdf:application/pdf},
+}
+
+@misc{wu_simplifying_2019,
+	title = {Simplifying {Graph} {Convolutional} {Networks}},
+	url = {http://arxiv.org/abs/1902.07153},
+	doi = {10.48550/arXiv.1902.07153},
+	abstract = {Graph Convolutional Networks (GCNs) and their variants have experienced significant attention and have become the de facto methods for learning graph representations. GCNs derive inspiration primarily from recent deep learning approaches, and as a result, may inherit unnecessary complexity and redundant computation. In this paper, we reduce this excess complexity through successively removing nonlinearities and collapsing weight matrices between consecutive layers. We theoretically analyze the resulting linear model and show that it corresponds to a fixed low-pass filter followed by a linear classifier. Notably, our experimental evaluation demonstrates that these simplifications do not negatively impact accuracy in many downstream applications. Moreover, the resulting model scales to larger datasets, is naturally interpretable, and yields up to two orders of magnitude speedup over FastGCN.},
+	urldate = {2024-07-20},
+	publisher = {arXiv},
+	author = {Wu, Felix and Zhang, Tianyi and Souza Jr., Amauri Holanda de and Fifty, Christopher and Yu, Tao and Weinberger, Kilian Q.},
+	month = jun,
+	year = {2019},
+	note = {arXiv:1902.07153 [cs, stat]},
+	keywords = {Computer Science - Machine Learning, Statistics - Machine Learning},
+	annote = {Comment: In ICML 2019. Code available at https://github.com/Tiiiger/SGC},
+	file = {arXiv.org Snapshot:C\:\\My_CS\\学习资料\\Zotero\\storage\\V6PKXZNX\\1902.html:text/html;Simplifying Graph Convolutional Networks_2019_Wu et al.pdf:C\:\\Users\\Winfred X\\OneDrive\\zoteroPDF\\Simplifying Graph Convolutional Networks_2019_Wu et al.pdf:application/pdf},
+}
+
+@misc{yan_spatial_2018,
+	title = {Spatial {Temporal} {Graph} {Convolutional} {Networks} for {Skeleton}-{Based} {Action} {Recognition}},
+	url = {http://arxiv.org/abs/1801.07455},
+	doi = {10.48550/arXiv.1801.07455},
+	abstract = {Dynamics of human body skeletons convey significant information for human action recognition. Conventional approaches for modeling skeletons usually rely on hand-crafted parts or traversal rules, thus resulting in limited expressive power and difficulties of generalization. In this work, we propose a novel model of dynamic skeletons called Spatial-Temporal Graph Convolutional Networks (ST-GCN), which moves beyond the limitations of previous methods by automatically learning both the spatial and temporal patterns from data. This formulation not only leads to greater expressive power but also stronger generalization capability. On two large datasets, Kinetics and NTU-RGBD, it achieves substantial improvements over mainstream methods.},
+	urldate = {2024-07-20},
+	publisher = {arXiv},
+	author = {Yan, Sijie and Xiong, Yuanjun and Lin, Dahua},
+	month = jan,
+	year = {2018},
+	note = {arXiv:1801.07455 [cs]},
+	keywords = {Computer Science - Computer Vision and Pattern Recognition},
+	annote = {Comment: Accepted by AAAI 2018},
+	file = {arXiv.org Snapshot:C\:\\My_CS\\学习资料\\Zotero\\storage\\L68LGFNY\\1801.html:text/html;Spatial Temporal Graph Convolutional Networks for Skeleton-Based Action_2018_Yan et al.pdf:C\:\\Users\\Winfred X\\OneDrive\\zoteroPDF\\Spatial Temporal Graph Convolutional Networks for Skeleton-Based Action_2018_Yan et al.pdf:application/pdf},
 }

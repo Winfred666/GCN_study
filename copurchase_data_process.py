@@ -67,14 +67,14 @@ def read_label(file_path,node_num,class_num = 500, class_max_rate = 0.2, class_m
     return labels, train_mask, test_mask
 
 # 3. 构建特征向量（使用 Node2Vec）
-def build_feature_vectors(sp_adj,num_nodes):
+def build_feature_vectors(sp_adj,num_nodes,dimensions=500):
     # 将图转换为真正的图
     G = nx.from_scipy_sparse_matrix(sp_adj)
     
     print("Trainslate to networkx graph")
     
     # 创建 Node2Vec 模型
-    node2vec = Node2Vec(G, dimensions=16, walk_length=10, num_walks=5, workers=20)
+    node2vec = Node2Vec(G, dimensions=dimensions, walk_length=10, num_walks=5, workers=20)
         #edges: 上一步生成的边列表。 dimensions: 特征向量的维度。walk_length: 每次随机游走的长度。num_walks: 每个节点进行随机游走的次数。workers: 用于并行计算的线程数。
     print("Build Node2Vec model")
     # 训练模型
